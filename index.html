@@ -1,0 +1,105 @@
+<html>
+<head>
+<style type="text/css">
+body{ margin: 0; background: #666;}
+#my_canvas{ background: #fff;}
+#pause{ height: 20px; display: inline; }
+</style>
+
+<script>
+function circle(){
+	this.x=100;
+	this.y=100;
+	this.r=20;
+	this.mass=0;
+	this.vx=0;
+	this.vy=0;
+	
+	this.render = function(ctx,x,y,r,color){
+		ctx.beginPath();
+		ctx.arc(x, y, r, 0, 6.2831);
+		ctx.fillStyle = color;
+		ctx.fill();
+	}
+}
+
+
+function init(){
+	var ctx = document.getElementById("my_canvas").getContext("2d");
+	ctx.canvas.width  = window.innerWidth;
+	ctx.canvas.height  = window.innerHeight-20;
+	var cw = ctx.canvas.width;
+	var ch = ctx.canvas.height;
+	
+	var cir1 = new circle();
+	var cir2 = new circle();
+	cir1.mass= 100;
+	cir2.mass= 1000;
+	cir1.vy=5;
+	cir1.x= 400;
+	cir1.y= 200;
+	cir2.x= 600;
+	cir2.y= 350;
+	
+	var pullstr = 0.08;
+	var p =0;
+	
+	function animate(){
+		ctx.clearRect(0,0,cw,ch);
+	
+		cir1.render(ctx, cir1.x, cir1.y, 10,"blue");
+		cir2.render(ctx, cir2.x, cir2.y, 20,"black");
+		
+		cir1.x += cir1.vx;
+		cir1.y += cir1.vy;
+		cir2.x += cir2.vx;
+		cir2.y += cir2.vy;
+		
+		var trad = Math.sqrt(Math.pow(Math.abs(cir2.y-cir1.y),2) + Math.pow(Math.abs(cir2.x-cir1.x),2));
+		cir1.vy += ( ((cir2.y-cir1.y) * cir2.mass) + ((1000*Math.pow(cir1.vy,2))/trad) )/1000000;
+		cir1.vx += ( ((cir2.x-cir1.x) * cir2.mass) + ((1000*Math.pow(cir1.vx,2))/trad) )/1000000;
+		
+		//cir2.vy += ((cir1.y-cir2.y) * cir1.mass)/100000;
+		//cir2.vx += ((cir1.x-cir2.x) * cir1.mass)/100000;
+		
+		if(p!=1){
+			requestAnimationFrame(animate);
+		}
+	}
+	animate();
+	
+	ctx.canvas.addEventListener("click", function(event){
+		var mousex = event.clientX - ctx.canvas.offsetLeft;
+		var mousey = event.clientY - ctx.canvas.offsetTop;
+		
+	});
+	
+	document.getElementById("pause").addEventListener("click", function(){
+		p=1;
+	});
+	
+	/*var circs = [];
+	var i=0;
+	ctx.canvas.addEventListener("click", function(){
+		clearInterval(animateInterval);
+		var mousex = event.clientX - ctx.canvas.offsetLeft;
+		var mousey = event.clientY - ctx.canvas.offsetTop;
+		circs[i] = new circle();
+		circs[i].render(ctx,mousex,mousey,20,"red");
+		console.log(circs[i]);
+		i++;
+	});*/
+}
+
+
+window.addEventListener("load", function(event){
+	init();
+});
+
+</script>
+</head>
+<body>
+	<button id="pause">pause</button>
+	<canvas id="my_canvas"></canvas>
+</body>
+</html>
