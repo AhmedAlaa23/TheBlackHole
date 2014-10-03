@@ -3,22 +3,41 @@
 <style type="text/css">
 body{ margin: 0; background: #666;}
 #my_canvas{ background: #fff;}
-#pause{ height: 20px; display: inline; }
+button{ height: 20px; display: inline; float: left; }
 </style>
 
 <script>
-function circle(){
-	this.x=100;
-	this.y=100;
+
+function blackhole(ctx){
+	this.x=ctx.canvas.width/2;
+	this.y=ctx.canvas.height/2;
 	this.r=20;
-	this.mass=0;
+	this.mass=1000;
 	this.vx=0;
 	this.vy=0;
 	
-	this.render = function(ctx,x,y,r,color){
+	this.render = function(ctx){
 		ctx.beginPath();
-		ctx.arc(x, y, r, 0, 6.2831);
-		ctx.fillStyle = color;
+		ctx.arc(ctx.canvas.width/2, ctx.canvas.height/2, 20, 0, 6.2831);
+		ctx.fillStyle = "black";
+		ctx.fill();
+	}
+}
+
+
+function circle(){
+	this.x=100;
+	this.y=100;
+	this.r=10;
+	this.mass=10;
+	this.vx=0;				// velocity in the x axis
+	this.vy=5;				// velocity in the y axis
+	this.color = "blue";
+	
+	this.render = function(ctx){
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, this.r, 0, 6.2831);
+		ctx.fillStyle = this.color;
 		ctx.fill();
 	}
 }
@@ -31,36 +50,33 @@ function init(){
 	var cw = ctx.canvas.width;
 	var ch = ctx.canvas.height;
 	
-	var cir1 = new circle();
-	var cir2 = new circle();
-	cir1.mass= 100;
-	cir2.mass= 1000;
-	cir1.vy=5;
-	cir1.x= 400;
-	cir1.y= 200;
-	cir2.x= 600;
-	cir2.y= 350;
+	var circs = []; // the array that has the objects
+	var i=0;	// the index that incerement whenever an object is created when the mouse is clicked
 	
-	var pullstr = 0.08;
+	var r=10;
+	var mass=10;
+	var color="blue";
+	
+	var hole = new blackhole(ctx);
+	
 	var p =0;
 	
 	function animate(){
 		ctx.clearRect(0,0,cw,ch);
-	
-		cir1.render(ctx, cir1.x, cir1.y, 10,"blue");
-		cir2.render(ctx, cir2.x, cir2.y, 20,"black");
+		hole.render(ctx);			// render the black hole
 		
-		cir1.x += cir1.vx;
-		cir1.y += cir1.vy;
-		cir2.x += cir2.vx;
-		cir2.y += cir2.vy;
+		for(i=0; i<circs.length; i++){
+			circs[i].render(ctx);
+			
+			circs[i].x += circs[i].vx;
+			circs[i].y += circs[i].vy;
+			
+			var trad = Math.sqrt(Math.pow(Math.abs(hole.y-circs[i].y),2) + Math.pow(Math.abs(hole.x-circs[i].x),2));
+			circs[i].vy += ( ((hole.y-circs[i].y) * hole.mass) + ((1000*Math.pow(circs[i].vy,2))/trad) )/1000000;
+			circs[i].vx += ( ((hole.x-circs[i].x) * hole.mass) + ((1000*Math.pow(circs[i].vx,2))/trad) )/1000000;
+		}
 		
-		var trad = Math.sqrt(Math.pow(Math.abs(cir2.y-cir1.y),2) + Math.pow(Math.abs(cir2.x-cir1.x),2));
-		cir1.vy += ( ((cir2.y-cir1.y) * cir2.mass) + ((1000*Math.pow(cir1.vy,2))/trad) )/1000000;
-		cir1.vx += ( ((cir2.x-cir1.x) * cir2.mass) + ((1000*Math.pow(cir1.vx,2))/trad) )/1000000;
 		
-		//cir2.vy += ((cir1.y-cir2.y) * cir1.mass)/100000;
-		//cir2.vx += ((cir1.x-cir2.x) * cir1.mass)/100000;
 		
 		if(p!=1){
 			requestAnimationFrame(animate);
@@ -68,27 +84,43 @@ function init(){
 	}
 	animate();
 	
-	ctx.canvas.addEventListener("click", function(event){
-		var mousex = event.clientX - ctx.canvas.offsetLeft;
+	
+	ctx.canvas.addEventListener("click", function(event){		// when mouse clicked on the canvas it create a new object
+		var mousex = event.clientX - ctx.canvas.offsetLeft;	// to get the coordinates inside the canvas right if there is a space left in the page
 		var mousey = event.clientY - ctx.canvas.offsetTop;
 		
+		circs[i] = new circle();		// creating an object in the array with it's values
+		circs[i].x = mousex;
+		circs[i].y = mousey;
+		circs[i].r = r;
+		circs[i].mass = mass;
+		circs[i].color = color;
+		i++;
 	});
 	
 	document.getElementById("pause").addEventListener("click", function(){
-		p=1;
+		p=1;			// to pause the game
 	});
 	
-	/*var circs = [];
-	var i=0;
-	ctx.canvas.addEventListener("click", function(){
-		clearInterval(animateInterval);
-		var mousex = event.clientX - ctx.canvas.offsetLeft;
-		var mousey = event.clientY - ctx.canvas.offsetTop;
-		circs[i] = new circle();
-		circs[i].render(ctx,mousex,mousey,20,"red");
-		console.log(circs[i]);
-		i++;
-	});*/
+	document.getElementById("sun").addEventListener("click", function(){
+		r=15;		// setting the values of the sun that will be set to it when created
+		mass=15;
+		color="orange";
+	});
+	
+	document.getElementById("planet").addEventListener("click", function(){
+		r=10;
+		mass=10;
+		color="blue";
+	});
+	
+	document.getElementById("moon").addEventListener("click", function(){
+		r=5;
+		mass=5;
+		color="gray";
+	});
+	
+	//clearInterval(animateInterval);
 }
 
 
@@ -100,6 +132,10 @@ window.addEventListener("load", function(event){
 </head>
 <body>
 	<button id="pause">pause</button>
+	<button id="sun">sun</button>
+	<button id="planet">planet</button>
+	<button id="moon">moon</button>
+	
 	<canvas id="my_canvas"></canvas>
 </body>
 </html>
