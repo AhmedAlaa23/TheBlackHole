@@ -21,7 +21,7 @@ function circle(){
 	this.r=10;
 	this.mass=10;
 	this.vx=0;				// velocity in the x axis
-	this.vy=5;				// velocity in the y axis
+	this.vy=5;				// velocity in the y axis and the initial velocity is 5 in the Y axis
 	this.color = "blue";
 	this.massscore=10;
 	
@@ -52,7 +52,7 @@ function init(){
 	var r=10;		// initial values that change later when choosing moon or sun
 	var mass=10;
 	var color="blue";
-	var massscore=10;
+	var massscore=100;
 	
 	var hole = new blackhole(ctx);
 	
@@ -92,9 +92,9 @@ function init(){
 		//circs[object].vy += ( ( ( (hole.y-circs[object].y) * hole.mass) /(hrad) ) + ((circs[object].mass*Math.pow(circs[object].vy,2))/hrad) )/1000000;
 		//circs[object].vx += ( ( ( (hole.x-circs[object].x) * hole.mass) /(hrad) ) + ((circs[object].mass*Math.pow(circs[object].vx,2))/hrad) )/1000000;
 		
-		circs[object].vy += ( ( (hole.y-circs[object].y) * hole.mass ) / (hrad) )  /1000000;
+		circs[object].vy += ( ( (hole.y-circs[object].y) * (hole.mass + circs[object].mass) ) / (hrad) )  /1000000;	// add velocity
 	
-		circs[object].vx += ( ( (hole.x-circs[object].x) * hole.mass ) / (hrad) ) /1000000;
+		circs[object].vx += ( ( (hole.x-circs[object].x) * (hole.mass + circs[object].mass) ) / (hrad) ) /1000000;
 		
 		
 		// check if an object hit the black hole
@@ -102,11 +102,12 @@ function init(){
 			gover=1;
 			document.getElementById("state").style.display = "inline-block";
 			document.getElementById("state").innerHTML = "Game Over <br> Your Score is: "+Math.floor(score);
+			document.getElementById("ng").style.display = "inline-block";
 		}
 		
-		score += (circs[object].massscore/hrad); // as long as the object is close to the black hole the score gets higher
+		score += (circs[object].massscore / hrad); // Adding the score
 		
-		for(k=0; k<circs.length; k++){
+		for(k=0; k<circs.length; k++){	// calc the velocity for every object with the ohter objects
 			if(object != k){
 				var orad = Math.sqrt(Math.pow(Math.abs(circs[k].y-circs[object].y),2) + Math.pow(Math.abs(circs[k].x-circs[object].x),2));
 				
@@ -114,18 +115,20 @@ function init(){
 					gover=1;
 					document.getElementById("state").style.display = "inline-block";
 					document.getElementById("state").innerHTML = "Game Over <br> Your Score is: "+Math.floor(score);
+					document.getElementById("ng").style.display = "inline-block";
 				}
 				
 				// v,x velocity = gravitational force + centripetal force = ((y-y) * mass)/r^2 + (mass*velocity^2)/r^2
 				//circs[object].vy += ( ( ( (circs[k].y-circs[object].y) * circs[k].mass ) /orad ) + ((circs[object].mass*Math.pow(circs[object].vy,2))/orad) )/1000000;
 				//circs[object].vx += ( ( ( (circs[k].x-circs[object].x) * circs[k].mass ) /orad ) + ((circs[object].mass*Math.pow(circs[object].vx,2))/orad) )/1000000;
 			
-				circs[object].vy += ( ( (circs[k].y-circs[object].y) * circs[k].mass ) / (orad) )  /1600000;
+				circs[object].vy += ( ( (circs[k].y-circs[object].y) * (circs[k].mass / circs[object].mass ) ) / (orad) )  /1000000;
 	
-				circs[object].vx += ( ( (circs[k].x-circs[object].x) * circs[k].mass ) / (orad) ) /1600000;
+				circs[object].vx += ( ( (circs[k].x-circs[object].x) * (circs[k].mass / circs[object].mass ) ) / (orad) ) /1000000;
 				
 			}
 		}
+		
 	}
 	
 	
@@ -179,7 +182,7 @@ function init(){
 	
 	document.getElementById("moon").addEventListener("click", function(){
 		r=5;
-		mass=10;
+		mass=100;
 		color="gray";
 		massscore=10;
 		document.getElementById("sun").style.color = "black";
@@ -196,6 +199,29 @@ function init(){
 		else if(st == false){
 			trace = 0;
 		}
+	});
+	
+	document.getElementById("closeinst").addEventListener("click", function(){		// hide the instructions
+		document.getElementById("inst").style.display = "none";
+		document.getElementById("closeinst").style.display = "none";
+	});
+	
+	document.getElementById("ng").addEventListener("click", function(){		// New Game
+		document.getElementById("state").style.display = "none";
+		document.getElementById("ng").style.display = "None";
+		
+		document.getElementById("inst").style.display = "none";		// removing the instructions
+		document.getElementById("closeinst").style.display = "none";
+		
+		r=10;		// restore the planet defaults
+		mass=1000;
+		color="blue";
+		massscore=100;
+		document.getElementById("sun").style.color = "black";
+		document.getElementById("planet").style.color = "brown";
+		document.getElementById("moon").style.color = "black";
+		
+		init();
 	});
 	
 }
