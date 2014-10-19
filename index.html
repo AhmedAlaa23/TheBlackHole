@@ -7,23 +7,30 @@
 </head>
 <body>
 	<div id="topbar">
-	<button id="pause">pause</button>
-	<button id="sun">sun</button>
-	<button id="planet">planet</button>
-	<button id="moon">moon</button>
-	<input id="trace" type="checkbox" checked="true"><span id="strace">Show Trace</span>
-	<p id="score">Score: <span id="scorenumber"></span></p>
+		<button id="pause">pause</button>
+		<button id="sun">sun</button>
+		<button id="planet">planet</button>
+		<button id="moon">moon</button>
+		<input id="trace" type="checkbox" checked="true"><span id="strace">Show Trace</span>
+		<p id="score">Score: <span id="scorenumber"></span></p>
 	</div>
 	
 	<span id="state"></span>
 	
-	<span id="ng">New Game</span>
+	<span id="ng">Play Again :)</span>
 	
 	<span id="inst">
-	<span id="closeinst">X</span>
 	Click anywhere on the screen to add objects.<br>
+	<span id="showrules">Rules</span>
+	You can choose the object you want (sun, planet, moon) from above<br>
+	just click on it then click anywhere on the screen.<br>
+	If The Black Hole Swallowed an object you will lose.<br>
+	If two object has hit each other you will lose.<br>
 	The closer the object pass by the black hole the higher score you get.<br>
-	The big object get higher score than the small one.
+	The big object get higher score than the small one.<br>
+	It's just that simple, Enjoy :)
+	<br>
+	<span id="hiderules">Hide Rules</span>
 	</span>
 	
 	<canvas id="spacecanvas"></canvas>

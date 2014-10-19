@@ -16,14 +16,14 @@ function blackhole(ctx){
 
 
 function circle(){
-	this.x=100;
-	this.y=100;
+	this.x=300;
+	this.y=300;
 	this.r=10;
-	this.mass=10;
+	this.mass=1000;
 	this.vx=0;				// velocity in the x axis
 	this.vy=5;				// velocity in the y axis and the initial velocity is 5 in the Y axis
 	this.color = "blue";
-	this.massscore=10;
+	this.massscore=100;
 	
 	this.render = function(ctx){
 		ctx.beginPath();
@@ -50,14 +50,19 @@ function init(){
 	var showscore = document.getElementById("scorenumber");
 	
 	var r=10;		// initial values that change later when choosing moon or sun
-	var mass=10;
+	var mass=1000;
 	var color="blue";
 	var massscore=100;
 	
-	var hole = new blackhole(ctx);
+	var hole = new blackhole(ctx);	// init the balckhole
+	
+	circs[i] = new circle();		// init the first object
+	circs[i].x = (cw/2)-150;
+	circs[i].y = (ch/2)-150;
+	i++;
 	
 	function animate(){
-		if(trace == 0){
+		if(trace == 0){						// remove the trace
 			ctx.clearRect(0,0,cw,ch);
 		}
 		else{
@@ -92,20 +97,22 @@ function init(){
 		//circs[object].vy += ( ( ( (hole.y-circs[object].y) * hole.mass) /(hrad) ) + ((circs[object].mass*Math.pow(circs[object].vy,2))/hrad) )/1000000;
 		//circs[object].vx += ( ( ( (hole.x-circs[object].x) * hole.mass) /(hrad) ) + ((circs[object].mass*Math.pow(circs[object].vx,2))/hrad) )/1000000;
 		
-		circs[object].vy += ( ( (hole.y-circs[object].y) * (hole.mass + circs[object].mass) ) / (hrad) )  /1000000;	// add velocity
+		circs[object].vy += ( ( (hole.y-circs[object].y) * (hole.mass + circs[object].mass) ) / (hrad+circs[object].mass/100) )  /1000000;	// add velocity
 	
-		circs[object].vx += ( ( (hole.x-circs[object].x) * (hole.mass + circs[object].mass) ) / (hrad) ) /1000000;
+		circs[object].vx += ( ( (hole.x-circs[object].x) * (hole.mass + circs[object].mass) ) / (hrad+circs[object].mass/100) ) /1000000;
 		
 		
 		// check if an object hit the black hole
 		if(hrad <= hole.r){
 			gover=1;
 			document.getElementById("state").style.display = "inline-block";
-			document.getElementById("state").innerHTML = "Game Over <br> Your Score is: "+Math.floor(score);
+			document.getElementById("state").innerHTML = "Game Over <br>The Black Hole Swallowed an Object :(<br><span id='scorespan'>Your Score is: "+Math.floor(score)+"</span>";
 			document.getElementById("ng").style.display = "inline-block";
 		}
 		
-		score += (circs[object].massscore / hrad); // Adding the score
+		if(circs.length>1){		// start adding score when the user add an object
+			score += (circs[object].massscore / hrad); // Adding the score
+		}
 		
 		for(k=0; k<circs.length; k++){	// calc the velocity for every object with the ohter objects
 			if(object != k){
@@ -114,7 +121,7 @@ function init(){
 				if(orad <= circs[k].r){ 	// check if two objects hit each others
 					gover=1;
 					document.getElementById("state").style.display = "inline-block";
-					document.getElementById("state").innerHTML = "Game Over <br> Your Score is: "+Math.floor(score);
+					document.getElementById("state").innerHTML = "Game Over <br>Two Objects has hit each other :(<br><span id='scorespan'>Your Score is: "+Math.floor(score)+"</span>";
 					document.getElementById("ng").style.display = "inline-block";
 				}
 				
@@ -122,9 +129,9 @@ function init(){
 				//circs[object].vy += ( ( ( (circs[k].y-circs[object].y) * circs[k].mass ) /orad ) + ((circs[object].mass*Math.pow(circs[object].vy,2))/orad) )/1000000;
 				//circs[object].vx += ( ( ( (circs[k].x-circs[object].x) * circs[k].mass ) /orad ) + ((circs[object].mass*Math.pow(circs[object].vx,2))/orad) )/1000000;
 			
-				circs[object].vy += ( ( (circs[k].y-circs[object].y) * (circs[k].mass / circs[object].mass ) ) / (orad) )  /1000000;
+				circs[object].vy += ( ( (circs[k].y-circs[object].y) * (circs[k].mass + circs[object].mass ) ) / (orad+circs[object].mass/100) )  /1000000;
 	
-				circs[object].vx += ( ( (circs[k].x-circs[object].x) * (circs[k].mass / circs[object].mass ) ) / (orad) ) /1000000;
+				circs[object].vx += ( ( (circs[k].x-circs[object].x) * (circs[k].mass + circs[object].mass ) ) / (orad+circs[object].mass/100) ) /1000000;
 				
 			}
 		}
@@ -156,7 +163,9 @@ function init(){
 		}
 		else if(p==-1){
 			document.getElementById("pause").innerHTML = "Pause";
-			animate();
+			if(gover!=1){
+				animate();
+			}
 		}
 	});
 	
@@ -201,27 +210,18 @@ function init(){
 		}
 	});
 	
-	document.getElementById("closeinst").addEventListener("click", function(){		// hide the instructions
-		document.getElementById("inst").style.display = "none";
-		document.getElementById("closeinst").style.display = "none";
+	document.getElementById("showrules").addEventListener("click", function(){		// show rules
+		document.getElementById("inst").style.overflow = "visible";
+		document.getElementById("showrules").style.display = "none";
+	});
+	
+	document.getElementById("hiderules").addEventListener("click", function(){		// hide rules
+		document.getElementById("inst").style.overflow = "hidden";
+		document.getElementById("showrules").style.display = "block";
 	});
 	
 	document.getElementById("ng").addEventListener("click", function(){		// New Game
-		document.getElementById("state").style.display = "none";
-		document.getElementById("ng").style.display = "None";
-		
-		document.getElementById("inst").style.display = "none";		// removing the instructions
-		document.getElementById("closeinst").style.display = "none";
-		
-		r=10;		// restore the planet defaults
-		mass=1000;
-		color="blue";
-		massscore=100;
-		document.getElementById("sun").style.color = "black";
-		document.getElementById("planet").style.color = "brown";
-		document.getElementById("moon").style.color = "black";
-		
-		init();
+		location.reload();
 	});
 	
 }
