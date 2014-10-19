@@ -20,4 +20,4 @@ The big object get higher score than the small one.
 It's just that simple, Enjoy :)
 
 <br>
-And It's not a real simulation, i just tried to simulate the physics of objects like velocity and gravity.
+**And It's not a real simulation, i just tried to simulate the physics of objects like velocity and gravity.**
