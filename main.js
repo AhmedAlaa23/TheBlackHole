@@ -1,14 +1,14 @@
 function blackhole(ctx){
 	this.x=ctx.canvas.width/2;
 	this.y=ctx.canvas.height/2;
-	this.r=20;
+	this.r= ctx.canvas.width/60;
 	this.mass=100000;
 	this.vx=0;
 	this.vy=0;
 	
 	this.render = function(ctx){
 		ctx.beginPath();
-		ctx.arc(ctx.canvas.width/2, ctx.canvas.height/2, 20, 0, 6.2831);
+		ctx.arc(ctx.canvas.width/2, ctx.canvas.height/2, this.r, 0, 6.2831);
 		ctx.fillStyle = "black";
 		ctx.fill();
 	}
@@ -18,7 +18,7 @@ function blackhole(ctx){
 function circle(){
 	this.x=300;
 	this.y=300;
-	this.r=10;
+	this.r= cw/120;
 	this.mass=1000;
 	this.vx=0;				// velocity in the x axis
 	this.vy=5;				// velocity in the y axis and the initial velocity is 5 in the Y axis
@@ -33,23 +33,26 @@ function circle(){
 	}
 }
 
+// canvas width and height as global variables to acces them anywhere
+var cw=0;
+var ch=0;
 
 function init(){
 	var ctx = document.getElementById("spacecanvas").getContext("2d");
 	ctx.canvas.width  = window.innerWidth;
 	ctx.canvas.height  = window.innerHeight;
-	var cw = ctx.canvas.width;
-	var ch = ctx.canvas.height;
+	cw = ctx.canvas.width;
+	ch = ctx.canvas.height;
 	
 	var circs = []; // the array that has the objects
 	var i=0;	// the index that incerement whenever an object is created when the mouse is clicked
 	var p = -1; // pause when 1
 	var gover=0; // game over when = 1
 	var score=0;
-	var teace = 1; 	// 1 for shawing the trace behind the object
+	var trace = 1; 	// 1 for shawing the trace behind the object
 	var showscore = document.getElementById("scorenumber");
 	
-	var r=10;		// initial values that change later when choosing moon or sun
+	var r= cw/120;		// initial values that change later when choosing moon or sun
 	var mass=1000;
 	var color="blue";
 	var massscore=100;
@@ -57,12 +60,12 @@ function init(){
 	var hole = new blackhole(ctx);	// init the balckhole
 	
 	circs[i] = new circle();		// init the first object
-	circs[i].x = (cw/2)-150;
-	circs[i].y = (ch/2)-150;
+	circs[i].x = (cw/2.7);
+	circs[i].y = (ch/2.7);
 	i++;
 	
 	function animate(){
-		if(trace == 0){						// remove the trace
+		if(trace == -1){						// remove the trace
 			ctx.clearRect(0,0,cw,ch);
 		}
 		else{
@@ -84,7 +87,8 @@ function init(){
 		showscore.innerHTML = Math.floor(score);
 		
 		if(p != 1 && gover != 1){
-			requestAnimationFrame(animate);
+			window.requestAnimationFrame(animate);
+			//animrate =  setInterval(animate, 1000);
 		}
 	}
 	animate();
@@ -96,10 +100,11 @@ function init(){
 		
 		//circs[object].vy += ( ( ( (hole.y-circs[object].y) * hole.mass) /(hrad) ) + ((circs[object].mass*Math.pow(circs[object].vy,2))/hrad) )/1000000;
 		//circs[object].vx += ( ( ( (hole.x-circs[object].x) * hole.mass) /(hrad) ) + ((circs[object].mass*Math.pow(circs[object].vx,2))/hrad) )/1000000;
-		
-		circs[object].vy += ( ( (hole.y-circs[object].y) * (hole.mass + circs[object].mass) ) / (hrad+circs[object].mass/100) )  /1000000;	// add velocity
+		// 1000000
+		var vspeed = 1000000;
+		circs[object].vy += ( ( (hole.y-circs[object].y) * (hole.mass + circs[object].mass) ) / (hrad+circs[object].mass/100) )  /vspeed;	// add velocity
 	
-		circs[object].vx += ( ( (hole.x-circs[object].x) * (hole.mass + circs[object].mass) ) / (hrad+circs[object].mass/100) ) /1000000;
+		circs[object].vx += ( ( (hole.x-circs[object].x) * (hole.mass + circs[object].mass) ) / (hrad+circs[object].mass/100) ) /vspeed;
 		
 		
 		// check if an object hit the black hole
@@ -156,6 +161,7 @@ function init(){
 	
 	
 	document.getElementById("pause").addEventListener("click", function(){	// to pause the game
+		//clearInterval(animrate);
 		p *= -1;
 		
 		if(p==1){
@@ -170,7 +176,7 @@ function init(){
 	});
 	
 	document.getElementById("sun").addEventListener("click", function(){
-		r=15;		// setting the values of the sun that will be set to it when created
+		r= cw/80;		// setting the values of the sun that will be set to it when created
 		mass=10000;
 		color="orange";
 		massscore=500;
@@ -180,7 +186,7 @@ function init(){
 	});
 	
 	document.getElementById("planet").addEventListener("click", function(){
-		r=10;
+		r= cw/120;
 		mass=1000;
 		color="blue";
 		massscore=100;
@@ -190,7 +196,7 @@ function init(){
 	});
 	
 	document.getElementById("moon").addEventListener("click", function(){
-		r=5;
+		r= cw/200;
 		mass=100;
 		color="gray";
 		massscore=10;
@@ -199,25 +205,25 @@ function init(){
 		document.getElementById("moon").style.color = "brown";
 	});
 	
-	document.getElementById("trace").addEventListener("change", function(){		// show or hide the trace
-		var st = document.getElementById("trace").checked;
+	document.getElementById("trace").addEventListener("click", function(){		// show or hide the trace
+		trace *= -1;
 		
-		if(st == true){
-			trace = 1;
+		if(trace==1){
+			document.getElementById("trace").innerHTML = "Hide Trace";
 		}
-		else if(st == false){
-			trace = 0;
+		else if(trace==-1){
+			document.getElementById("trace").innerHTML = "Show Trace";
 		}
 	});
 	
-	document.getElementById("showrules").addEventListener("click", function(){		// show rules
-		document.getElementById("inst").style.overflow = "visible";
-		document.getElementById("showrules").style.display = "none";
+	document.getElementById("showinst").addEventListener("click", function(){		// show instructions
+		document.getElementById("inst").style.display = "block";
+		console.log("here");
 	});
 	
-	document.getElementById("hiderules").addEventListener("click", function(){		// hide rules
-		document.getElementById("inst").style.overflow = "hidden";
-		document.getElementById("showrules").style.display = "block";
+	document.getElementById("closeinst").addEventListener("click", function(){		// show instructions
+		document.getElementById("inst").style.display = "none";
+		console.log("here");
 	});
 	
 	document.getElementById("ng").addEventListener("click", function(){		// New Game

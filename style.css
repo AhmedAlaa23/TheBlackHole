@@ -3,6 +3,8 @@
 	padding: 0;
 }
 
+/*============== the game ===================*/
+
 #spacecanvas{
 	background: #fff;
 	clear: both;
@@ -10,26 +12,32 @@
 
 #topbar{
 	position: absolute;
-	width: 100% 
+	width: 100%;
+	height: 5%;
 }
+
 button{
-	height: 20px;
 	display: inline;
 	float: left;
-	width: 80px;
-	height: 30px;
 	background-color: #cccccc;
 	border: 0;
 	font-family: tahoma;
-	font-size: 20px;
+	font-size: 3vw;
+	padding: 0.5%;
+}
+
+@media only screen and (min-width: 1000px){
+	button{
+		font-size: 25px;
+	}
 }
 
 #pause{
-	margin-left: 10px;
+	margin-left: 1.5%;
 }
 
 #sun, #planet, #moon{
-	margin-left: 15px;
+	margin-left: 1.5%;
 }
 
 #planet{
@@ -37,24 +45,52 @@ button{
 }
 
 #score{
-	padding-right: 150px;
-	padding-top: 10px;
+	margin-right: 12%;
+	margin-top: 3%;
 	color: black;
 	float: right;
 	font-family: tahoma;
-	font-size: 25px;
+	font-weight: bold;
+	font-size: 3vw;
+	line-height: 0px;
 }
 
 #trace{
-	width: 30px;
-	height: 18px;
-	margin-top: 10px;
-	margin-left: 10px;
+	margin-left: 4%;
+	font-family: tahoma;
 }
 
-#strace{
-	font-family: tahoma;
-	font-size: 18px;
+#showinst{
+	clear: both;
+	cursor: pointer;
+	padding-top: 10px;
+	margin-left: 1.5%;
+	font-family: verdana;
+	font-size: 20px;
+	font-weight: bold;
+	color: #214D76;
+}
+
+#inst{
+	display: none;
+	position: absolute;
+	top: 20%;
+	left: 20%;
+	right: 20%;
+	padding: 10px;
+	font-family: verdana;
+	font-size: 1.8vw;
+	color: black;
+	background-color: gray;
+	border: 1px solid black;
+	border-radius: 4px;
+}
+
+#closeinst{
+	float: right;
+	color: brown;
+	font-size: 2vw;
+	cursor: pointer;
 }
 
 #state{
@@ -73,39 +109,13 @@ button{
 	font-family: tahoma;
 	font-size: 25px;
 	text-align: center;
+	background-color: whitesmoke;
 }
 
 #scorespan{
 	display: inline-block;
 	padding-top: 14px;
 	font-weight: bold;
-}
-
-#inst{
-	display: inline-block;
-	position: absolute;
-	margin-left: 10px;
-	margin-top: 40px;
-	font-family: tahoma;
-	font-size: 15px;
-	height: 35px;
-	overflow: hidden;
-}
-
-#showrules{
-	display: block;
-	width: 44px;
-	color: #0F0A3C;
-	font-weight: bold;
-	cursor:pointer;
-	text-decoration: underline;
-}
-
-#hiderules{
-	color: #0F0A3C;
-	font-weight: bold;
-	cursor:pointer;
-	text-decoration: underline;
 }
 
 #ng{
@@ -126,4 +136,20 @@ button{
 	background-color: #E9E9EA;
 	color: #086C10;
 	cursor:pointer;
+}
+
+#aboutlink{
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+	font-family: verdana;
+	font-size: 1.5vw;
+	color: black;
+}
+
+#about{
+	padding-left: 2%;
+	margin-top: 2%;
+	font-family: verdana;
+	font-size: 2.5vw;
 }
