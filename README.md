@@ -7,6 +7,7 @@ All objects apply a gravitational force on each others.
 
 <h1><a href="http://ahmedalaa23.github.io/TheBlackHole/">Try it :)</a></h1>
 
+
 <h1>How to Play</h1>
 
 Click anywhere on the screen to add objects.<br>
