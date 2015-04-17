@@ -5,7 +5,7 @@ A game made by using JavaScript and HTML5 canvas 2D.<br>
 The Back Hole apply a gravitational force on all the objects.<br>
 All objects apply a gravitational force on each others.
 
-<h1><a href="http://ahmedalaa23.github.io/TheBlackHole/">Try it :)</a></h1>
+<h1><a href="http://circularbit.com/theblackhole/index.html">Try it :)</a></h1>
 
 
 <h1>How to Play</h1>
