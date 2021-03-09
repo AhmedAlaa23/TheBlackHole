@@ -40,13 +40,13 @@ button{
 }
 
 #planet{
-	color: brown;
+	color: blue;
 }
 
 #score{
 	margin-right: 12%;
 	margin-top: 3%;
-	color: gray;
+	color: lime;
 	float: right;
 	font-family: verdana;
 	font-size: 3vw;
@@ -73,9 +73,9 @@ button{
 #inst{
 	display: none;
 	position: absolute;
-	top: 20%;
-	left: 20%;
-	right: 20%;
+	top: 2%;
+	left: 2%;
+	right: 2%;
 	padding: 10px;
 	font-family: verdana;
 	font-size: 1.8vw;
